@@ -1,0 +1,17 @@
+ services:
+  jdownloader:
+    image: jlesage/jdownloader-2
+    container_name: jdownloader
+    ports:
+      - "5800:5800"
+    volumes:
+      - "/home/xc/.config/jDownloader:/config"
+      - "/home/xc/Downloads:/output"
+    environment:
+      - USER_ID=1000
+      - GROUP_ID=1000
+      - TZ=Europe/Warsaw
+      - MYJDOWNLOADER_EMAIL=konrad.admin@gmail.com
+      - MYJDOWNLOADER_PASSWORD=2WSiGYEzlSmfRuZ8WtZB
+      - MYJD_DEVICE_NAME=Lenovo
+    restart: unless-stopped

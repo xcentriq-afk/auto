@@ -1,0 +1,58 @@
+services:
+  nextcloud:
+    image: nextcloud
+    container_name: nextcloud
+    restart: unless-stopped
+    networks:
+      - cloud
+    depends_on:
+      - nextclouddb
+      - redis
+    ports:
+      - 8081:80
+    volumes:
+      - /home/xc/nextcloud/cloud/html:/var/www/html
+      - /home/xc/nextcloud/cloud/custom_apps:/var/www/html/custom_apps
+      - /home/xc/nextcloud/cloud/config:/var/www/html/config
+      - /home/xc/nextcloud/cloud/data:/var/www/html/data
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Oslo
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=ff9NzrWcr8fqVFFgDsrt
+      - MYSQL_HOST=nextclouddb
+      - REDIS_HOST=redis
+
+  nextclouddb:
+    image: mariadb
+    container_name: nextcloud-db
+    restart: unless-stopped
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    networks: 
+      - cloud
+    volumes:
+      - /home/xc/nextcloud/nextclouddb:/var/lib/mysql
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Oslo
+      - MYSQL_RANDOM_ROOT_PASSWORD=true
+      - MYSQL_PASSWORD=ff9NzrWcr8fqVFFgDsrt
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    volumes:
+      - /home/xc/nextcloud/redis:/data
+    networks:
+      - cloud
+
+networks:
+  cloud:
+    name: cloud
+    driver: bridge
+

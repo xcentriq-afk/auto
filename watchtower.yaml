@@ -1,0 +1,10 @@
+services:
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=Europe/Oslo
+    command: --schedule "0 0 0 * * 0" homer auto-filebrowser-1 qbittorrent jdownloader ecstatic_brown
+    restart: unless-stopped
