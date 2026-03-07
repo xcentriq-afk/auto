@@ -1,34 +1,25 @@
-
 # source shared helpers placed next to scripts
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" >/dev/null 2>&1 && pwd)"
 if [ -f "$SCRIPT_DIR/common.sh" ]; then
-   # shellcheck source=/dev/null
-   source "$SCRIPT_DIR/common.sh"
+  # shellcheck source=/dev/null
+  source "$SCRIPT_DIR/common.sh"
 else
-   echo "[WARN] common.sh not found in $SCRIPT_DIR; continuing without shared helpers"
+  echo "[WARN] common.sh not found in $SCRIPT_DIR; continuing without shared helpers"
 fi
 
-info "Etap 1: instalacja pakietów, konfiguracja usług i uruchomienie kontenerów"
-
-info "Aktualizuję bazę pakietów i instaluję wymagane pakiety systemowe"
 pacman -Syu --noconfirm
 
-info "Instaluję zbiór przydatnych narzędzi i bibliotek (tmux, reflector, docker, samba itp.)"
 for pkg in  tmux reflector btop ncdu dysk unp unzip base-devel wget curl zsh mc openssh exa nano docker zsh-syntax-highlighting samba smbclient ntfs-3g fuse aria2 fastfetch htop pacman-contrib; do
-   pacman -S --needed --noconfirm "$pkg"
+    pacman -S --needed --noconfirm "$pkg"
 done
 
-info "Aktualizuję listę mirrorów pacman przy pomocy reflector (najlepsze HTTPS)"
 reflector --verbose --latest 30 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
-info "Włączam i uruchamiam usługę SSH (sshd)"
 systemctl start sshd
 systemctl enable sshd
 
-info "Kopiuję konfigurację Homer do katalogu użytkownika"
 cp -r /home/xc/auto/config/Homer/ /home/xc/.config/Homer
 
-info "Instaluję rozszerzenia i konfigurację edytora nano (nanorc)"
 git clone https://github.com/scopatz/nanorc.git
 cd nanorc
 make install
@@ -36,7 +27,6 @@ bash install.sh
 cd ..
 rm -r nanorc
 
-info "Konfiguruję i uruchamiam Docker oraz instaluję Portainer do zarządzania kontenerami"
 systemctl daemon-reload
 systemctl start docker.socket
 systemctl enable docker.service
@@ -96,7 +86,6 @@ EOF
 #read -s -p "Enter Samba password: " PASSWORD
 #echo
 
-info "Konfiguruję Samba: ustawię fstab, wygeneruję smb.conf i dodam użytkownika Samba"
 printf "Enter Samba password: "
 stty -echo
 read PASSWORD
@@ -145,7 +134,6 @@ compose() {
       fi
 }
 
-info "Uruchamiam zestaw usług Docker Compose z dostępnych plików YAML"
 compose -f browser.yaml up -d
 compose -f homer.yaml up -d
 compose -f jellyfin.yaml up -d
@@ -153,7 +141,6 @@ compose -f qbittorrent.yaml up -d
 compose -f jdownloader.yaml up -d
 compose -f watchtower.yaml up -d
 
-info "Na koniec: instrukcja instalacji Oh My Zsh dla zwykłego użytkownika"
 echo "Please log as regular user (su xc) and copy and paste the following command into your terminal:"
 echo "sh -c \"\$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)\""
 

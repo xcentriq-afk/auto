@@ -9,10 +9,14 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-info(){ printf "\e[1;34m[INFO]\e[0m %s\n" "$*"; }
-ok(){   printf "\e[1;32m[ OK ]\e[0m %s\n" "$*"; }
-warn(){ printf "\e[1;33m[WARN]\e[0m %s\n" "$*"; }
-err(){  printf "\e[1;31m[ERR ]\e[0m %s\n" "$*"; }
+# source shared helpers placed next to scripts
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" >/dev/null 2>&1 && pwd)"
+if [ -f "$SCRIPT_DIR/common.sh" ]; then
+  # shellcheck source=/dev/null
+  source "$SCRIPT_DIR/common.sh"
+else
+  echo "[WARN] common.sh not found in $SCRIPT_DIR; continuing without shared helpers"
+fi
 
 if [ "$(id -u)" -ne 0 ]; then
   err "Uruchom skrypt jako root (sudo)."
