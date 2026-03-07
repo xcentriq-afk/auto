@@ -14,5 +14,4 @@ echo
 
 chmod +x snapped.sh stage1.sh stage2.sh
 bash ./snapped.sh
-
-
+bash ./stage1.sh

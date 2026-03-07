@@ -276,6 +276,3 @@ snapper -c root create -d "pierwszy snapshot po instalacji" --cleanup-algorithm=
 ok "Pierwszy snapshot utworzony."
 rm -rf ~/.cache/aurbuild
 rm -rf ~/snap-pac
-
-info "Zalogój się na konto 'root' i uruchom ponownie snapped.sh, aby dokończyć konfigurację."
-info "su root"
