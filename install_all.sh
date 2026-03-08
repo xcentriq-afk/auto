@@ -290,6 +290,12 @@ do_snapped() {
   snapper -c root create -d "pierwszy snapshot po instalacji" --cleanup-algorithm=number && ok "Pierwszy snapshot utworzony."
   rm -rf ~/.cache/aurbuild
   rm -rf ~/snap-pac
+
+  info "---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---"
+  info "Etap 1 zakończony. Usługi powinny być uruchomione. Możesz sprawdzić status kontenerów poleceniem: docker ps"
+  info "Proszę zalogować się jako xc (su xc) i skopiować poniższy command do terminala:"
+  info "sh -c \"\$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)\""
+  info "---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---"
 }
 
 
@@ -363,23 +369,17 @@ do_stage1() {
   check $? "compose jdownloader.yaml up"
   compose -f watchtower.yaml up -d
   check $? "compose watchtower.yaml up"
-
-  info "---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---"
-  info "Etap 1 zakończony. Usługi powinny być uruchomione. Możesz sprawdzić status kontenerów poleceniem: docker ps"
-  info "Proszę zalogować się jako xc (su xc) i skopiować poniższy command do terminala:"
-  info "sh -c \"\$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)\""
-  info "---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---*---"
 }
 
 # ----------------- MAIN ENTRYPOINT -----------------
 main() {
   echo
-  info ">>> Uruchamianie kroków: snapped i stage1"
+  info ">>> Uruchamianie kroków: stage1 i snapped"
   echo
 
   # Ensure script is executable and run tasks
-  do_snapped
   do_stage1
+  do_snapped
 }
 
 main "$@"
