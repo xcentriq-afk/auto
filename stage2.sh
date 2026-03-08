@@ -20,11 +20,11 @@ fi
 EOF
 
 cd /home/xc || exit 1
-sudo pacman -S --needed git base-devel && \
+sudo pacman -Sy --needed git base-devel && \
 git clone https://aur.archlinux.org/yay.git && \
 cd yay && \
 makepkg -si
 
 sudo rm -rf /home/xc/yay
 
-yay -S lazydocker
+yay -Sy lazydocker
