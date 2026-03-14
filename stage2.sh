@@ -1,3 +1,4 @@
+info "Adding zsh plugins, aliases, and startup tools to .zshrc"
 cat << 'EOF' >> /home/xc/.zshrc
 
 # --- Plugins ---
@@ -19,12 +20,13 @@ fi
 
 EOF
 
-cd /home/xc || exit 1
-sudo pacman -Sy --needed git base-devel && \
+info "Installing yay (AUR helper) and lazydocker"
+cd /home/xc || exit 1 && \ 
+sudo pacman -Sy --needed --noconfirm git base-devel && \
 git clone https://aur.archlinux.org/yay.git && \
 cd yay && \
-makepkg -si
-
-sudo rm -rf /home/xc/yay
-
-yay -Sy lazydocker
+sudo mkdir -p /home/xc/.cache/go-build && \
+sudo chown -R xc:xc /home/xc/.cache/go-build && \
+makepkg -si --noconfirm && \
+sudo rm -rf /home/xc/yay && \  
+yay -Sy --needed --noconfirm lazydocker 

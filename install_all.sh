@@ -324,8 +324,17 @@ do_stage1() {
   check $? "systemctl enable sshd"
 
   info "Kopiuję konfigurację Homer do katalogu użytkownika"
+  mkdir -p /home/xc/.config/Homer
   cp -r /home/xc/auto/config/Homer/ /home/xc/.config/Homer
   check $? "copy Homer config"
+
+  mkdir -p /media/usb3 && chown xc:xc /media/usb3 && chmod 755 /media/usb3 && ok "Created /media/usb3 with proper permissions"
+  echo 'UUID=6CEAD123EAD0EA7A /media/usb3 ntfs-3g rw,defaults 0 2' >> /etc/fstab && ok "Added USB drive to /etc/fstab"
+  mount -a || warn "mount -a failed (check /etc/fstab and disk UUID)" 
+  cp smb.conf /etc/samba/smb.conf && check $? "copy smb.conf"
+  smbpasswd -a xc && check $? "smbpasswd -a xc"
+  systemctl start smb nmb && check $? "systemctl start smb nmb"
+  systemctl enable smb nmb  && check $? "systemctl enable smb nmb"
 
   info "Instaluję rozszerzenia i konfigurację edytora nano (nanorc)"
   git clone https://github.com/scopatz/nanorc.git
@@ -369,6 +378,10 @@ do_stage1() {
   check $? "compose jdownloader.yaml up"
   compose -f watchtower.yaml up -d
   check $? "compose watchtower.yaml up"
+  info "Wszystkie kontenery powinny być uruchomione. Sprawdź: docker ps"
+  echo "Podaj token Cloudflare Tunnel (skopiuj i wklej, potem Enter):"
+  read -r CLOUDFLARE_TOKEN
+  docker run -d cloudflare/cloudflared:latest tunnel --no-autoupdate run --token "$CLOUDFLARE_TOKEN"
 }
 
 # ----------------- MAIN ENTRYPOINT -----------------
