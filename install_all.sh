@@ -325,7 +325,7 @@ do_stage1() {
 
   info "Kopiuję konfigurację Homer do katalogu użytkownika"
   mkdir -p /home/xc/.config/Homer
-  cp -r /home/xc/auto/config/Homer/ /home/xc/.config/Homer
+  cp -r /home/xc/auto/config/Homer/ /home/xc/.config/
   check $? "copy Homer config"
 
   mkdir -p /media/usb3 && chown xc:xc /media/usb3 && chmod 755 /media/usb3 && ok "Created /media/usb3 with proper permissions"
@@ -379,9 +379,6 @@ do_stage1() {
   compose -f watchtower.yaml up -d
   check $? "compose watchtower.yaml up"
   info "Wszystkie kontenery powinny być uruchomione. Sprawdź: docker ps"
-  echo "Podaj token Cloudflare Tunnel (skopiuj i wklej, potem Enter):"
-  read -r CLOUDFLARE_TOKEN
-  docker run -d cloudflare/cloudflared:latest tunnel --no-autoupdate run --token "$CLOUDFLARE_TOKEN"
 }
 
 # ----------------- MAIN ENTRYPOINT -----------------
