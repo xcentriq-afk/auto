@@ -318,21 +318,21 @@ do_stage1() {
   check $? "reflector -- save mirrorlist"
 
   info "Włączam i uruchamiam usługę SSH (sshd)"
-  systemctl start sshd
-  check $? "systemctl start sshd"
+  systemctl start sshd 
+  check $? "systemctl start sshd" 
   systemctl enable sshd
   check $? "systemctl enable sshd"
 
   info "Kopiuję konfigurację Homer do katalogu użytkownika"
-  mkdir -p /home/xc/.config/Homer
-  cp -r /home/xc/auto/config/Homer/ /home/xc/.config/
-  check $? "copy Homer config"
+  mkdir -p /home/xc/.config/
+  cp -r /home/xc/auto/config/* /home/xc/.config/
+  check $? "copy Homer config" 
 
   mkdir -p /media/usb3 && chown xc:xc /media/usb3 && chmod 755 /media/usb3 && ok "Created /media/usb3 with proper permissions"
   echo 'UUID=6CEAD123EAD0EA7A /media/usb3 ntfs-3g rw,defaults 0 2' >> /etc/fstab && ok "Added USB drive to /etc/fstab"
   mount -a || warn "mount -a failed (check /etc/fstab and disk UUID)" 
-  cp smb.conf /etc/samba/smb.conf && check $? "copy smb.conf"
-  smbpasswd -a xc && check $? "smbpasswd -a xc"
+  cp smb.conf /etc/samba/smb.conf && check $? "copy smb.conf" 
+  smbpasswd -a xc && check $? "smbpasswd -a xc"  
   systemctl start smb nmb && check $? "systemctl start smb nmb"
   systemctl enable smb nmb  && check $? "systemctl enable smb nmb"
 
@@ -343,8 +343,8 @@ do_stage1() {
   check $? "cd nanorc"
   make install || true
   check $? "nanorc make install"
-  bash install.sh || true
-  check $? "nanorc install.sh"
+  bash install.sh || true 
+  check $? "nanorc install.sh"  
   cd .. || true
   rm -r nanorc || true
   check $? "remove nanorc directory"
@@ -357,11 +357,12 @@ do_stage1() {
   systemctl enable docker.service
   check $? "systemctl enable docker.service"
 
-  usermod -aG docker xc || true
-  check $? "usermod -aG docker xc"
+  info "Dodaję użytkownika xc do grupy docker, aby mógł używać Dockera bez sudo"
+  usermod -aG docker xc || true  
+  check $? "usermod -aG docker xc"  
 
-  docker pull portainer/portainer-ce:latest || true
-  check $? "docker pull portainer"
+  docker pull portainer/portainer-ce:latest || true 
+  check $? "docker pull portainer"  
   docker run -d -p 9000:9000 -p 9443:9443 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest || true
   check $? "docker run portainer"
 
