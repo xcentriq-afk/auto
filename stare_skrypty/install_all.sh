@@ -51,7 +51,6 @@ compose() {
 
 # ----------------- SNAPPED / AUR BUILD HELPERS (from snapped.sh) -----------------
 run_as_user() {
-  #local cmd="$1"
   local cmd="$*"
   sudo -u "$REAL_USER" bash -lc "$cmd"
 }
@@ -308,19 +307,19 @@ do_stage1() {
   check $? "pacman -Syu"
 
   info "Instaluję zbiór przydatnych narzędzi i bibliotek"
-  for pkg in  tmux reflector btop ncdu dysk unp unzip base-devel wget curl zsh mc openssh exa nano docker zsh-syntax-highlighting samba smbclient ntfs-3g fuse aria2 fastfetch htop pacman-contrib; do
-     pacman -S --needed --noconfirm "$pkg"
-  done
-  check $? "install packages with pacman"
-
-  info "Aktualizuję listę mirrorów pacman przy pomocy reflector (najlepsze HTTPS)"
-  reflector --verbose --latest 30 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
-  check $? "reflector -- save mirrorlist"
-
-  info "Włączam i uruchamiam usługę SSH (sshd)"
-  systemctl start sshd 
-  check $? "systemctl start sshd" 
-  systemctl enable sshd
+    echo "Nie znaleziono 'docker compose' ani 'docker-compose' — próbuję zainstalować docker-compose przez pacman..." >&2
+    if command -v pacman >/dev/null 2>&1; then
+      pacman -S --needed --noconfirm docker-compose || true
+      if command -v docker-compose >/dev/null 2>&1; then
+        docker-compose "$@"
+        return $?
+      fi
+      echo "Instalacja zakończona, ale 'docker-compose' nadal niedostępny." >&2
+      return 1
+    else
+      echo "Błąd: pacman nie jest dostępny — nie mogę automatycznie zainstalować docker-compose." >&2
+      return 1
+    fi
   check $? "systemctl enable sshd"
 
   info "Kopiuję konfigurację Homer do katalogu użytkownika"

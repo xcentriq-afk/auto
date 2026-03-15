@@ -20,6 +20,19 @@ fi
 
 EOF
 
+info "Instaluję rozszerzenia i konfigurację edytora nano (nanorc)"
+git clone https://github.com/scopatz/nanorc.git
+check $? "git clone nanorc"
+cd nanorc || true
+check $? "cd nanorc"
+make install || true
+check $? "nanorc make install"
+bash install.sh || true 
+check $? "nanorc install.sh"  
+cd .. || true
+rm -r nanorc || true
+check $? "remove nanorc directory"
+
 info "Installing yay (AUR helper) and lazydocker"
 cd /home/xc || exit 1 && \ 
 sudo pacman -Sy --needed --noconfirm git base-devel && \
