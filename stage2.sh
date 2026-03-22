@@ -17,7 +17,9 @@ fi
 if command -v dysk >/dev/null 2>&1; then
     dysk
 fi
-
+# Remove existing ZSH_THEME line and set new theme
+sed -i '/^ZSH_THEME=/d' /home/xc/.zshrc
+echo 'ZSH_THEME="fino-time"' >> /home/xc/.zshrc
 EOF
 
 info "Instaluję rozszerzenia i konfigurację edytora nano (nanorc)"

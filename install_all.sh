@@ -308,7 +308,7 @@ do_stage1() {
   check $? "pacman -Syu"
 
   info "Instaluję zbiór przydatnych narzędzi i bibliotek"
-  for pkg in  tmux reflector btop ncdu dysk unp unzip base-devel wget curl zsh mc openssh exa nano docker zsh-syntax-highlighting samba smbclient ntfs-3g fuse aria2 fastfetch htop pacman-contrib; do
+  for pkg in  tmux reflector btop ncdu dysk unp unrar unzip base-devel wget curl zsh mc openssh exa nano docker zsh-syntax-highlighting samba smbclient ntfs-3g fuse aria2 fastfetch htop pacman-contrib; do
      pacman -S --needed --noconfirm "$pkg"
   done
   check $? "install packages with pacman"
